@@ -1,70 +1,99 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+class ProfileTest extends TestCase
+{
+    use RefreshDatabase;
 
-it('profile page is displayed', function () {
-    $user = User::factory()->create();
+    public function test_profile_page_is_displayed(): void
+    {
+        $user = User::factory()->create();
 
-    $this->actingAs($user)
-        ->get('/profile')
-        ->assertOk();
-});
+        $response = $this
+            ->actingAs($user)
+            ->get('/profile');
 
-it('profile information can be updated', function () {
-    $user = User::factory()->create();
+        $response->assertOk();
+    }
 
-    $this->actingAs($user)
-        ->patch('/profile', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ])
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
+    public function test_profile_information_can_be_updated(): void
+    {
+        $user = User::factory()->create();
 
-    $user->refresh();
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
 
-    expect($user->name)->toBe('Test User')
-        ->and($user->email)->toBe('test@example.com')
-        ->and($user->email_verified_at)->toBeNull();
-});
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile');
 
-it('email verification status remains unchanged when email is unchanged', function () {
-    $user = User::factory()->create();
+        $user->refresh();
 
-    $this->actingAs($user)
-        ->patch('/profile', [
-            'name' => 'Test User',
-            'email' => $user->email,
-        ])
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
+        $this->assertSame('Test User', $user->name);
+        $this->assertSame('test@example.com', $user->email);
+        $this->assertNull($user->email_verified_at);
+    }
 
-    expect($user->refresh()->email_verified_at)->not->toBeNull();
-});
+    public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
+    {
+        $user = User::factory()->create();
 
-it('user can delete their account', function () {
-    $user = User::factory()->create();
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'name' => 'Test User',
+                'email' => $user->email,
+            ]);
 
-    $this->actingAs($user)
-        ->delete('/profile', ['password' => 'password'])
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/');
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile');
 
-    expect(auth()->check())->toBeFalse()
-        ->and(User::find($user->id))->toBeNull();
-});
+        $this->assertNotNull($user->refresh()->email_verified_at);
+    }
 
-it('correct password must be provided to delete account', function () {
-    $user = User::factory()->create();
+    public function test_user_can_delete_their_account(): void
+    {
+        $user = User::factory()->create();
 
-    $this->actingAs($user)
-        ->from('/profile')
-        ->delete('/profile', ['password' => 'wrong-password'])
-        ->assertSessionHasErrorsIn('userDeletion', 'password')
-        ->assertRedirect('/profile');
+        $response = $this
+            ->actingAs($user)
+            ->delete('/profile', [
+                'password' => 'password',
+            ]);
 
-    expect(User::find($user->id))->not->toBeNull();
-});
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+        $this->assertNull($user->fresh());
+    }
+
+    public function test_correct_password_must_be_provided_to_delete_account(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->delete('/profile', [
+                'password' => 'wrong-password',
+            ]);
+
+        $response
+            ->assertSessionHasErrorsIn('userDeletion', 'password')
+            ->assertRedirect('/profile');
+
+        $this->assertNotNull($user->fresh());
+    }
+}

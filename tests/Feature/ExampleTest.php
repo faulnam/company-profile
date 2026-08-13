@@ -1,9 +1,19 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+namespace Tests\Feature;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-it('homepage returns a successful response', function () {
-    $this->get('/')->assertOk();
-});
+class ExampleTest extends TestCase
+{
+    /**
+     * A basic test example.
+     */
+    public function test_the_application_returns_a_successful_response(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+    }
+}
