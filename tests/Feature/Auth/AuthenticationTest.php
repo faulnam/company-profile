@@ -11,7 +11,6 @@ it('login screen can be rendered', function () {
 
 it('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
-    $user->assignRole('admin');
 
     $this->post('/login', [
         'email' => $user->email,
@@ -34,7 +33,6 @@ it('users cannot authenticate with invalid password', function () {
 
 it('users can logout', function () {
     $user = User::factory()->create();
-    $user->assignRole('admin');
 
     $this->actingAs($user)
         ->post('/logout')

@@ -16,7 +16,6 @@ it('email verification screen can be rendered', function () {
 
 it('email can be verified', function () {
     $user = User::factory()->unverified()->create();
-    $user->assignRole('admin');
 
     Event::fake();
 
