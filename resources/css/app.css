@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
-/* 
-  Theme customizations (Tailwind v4 style) 
+/*
+Theme customizations (Tailwind v4 style)
 */
 @theme {
-  --color-school: #047857;
-  --color-school-dark: #065f46;
-  --color-school-light: #10b981;
+--color-school: #047857;
+--color-school-dark: #065f46;
+--color-school-light: #10b981;
 }
