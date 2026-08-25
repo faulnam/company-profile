@@ -1,8 +1,4 @@
-@extends('layouts.public')
-
-@section('title', 'Tes Online PPDB')
-
-@section('content')
+<x-public-layout>
 <div class="py-16 bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 max-w-4xl">
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
@@ -57,4 +53,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-public-layout>

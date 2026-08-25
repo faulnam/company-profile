@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Teacher;
+use App\Models\User;
+use App\Models\Student;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -13,44 +18,77 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // Define Roles
-        $roleAdmin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin']);
-        $roleTU = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'tu']);
-        $roleGuru = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'walikelas']);
-        $roleWali = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'walimurid']);
+        $roleAdmin = Role::firstOrCreate(['name' => 'admin']);
+        $roleTU = Role::firstOrCreate(['name' => 'tu']);
+        $roleGuru = Role::firstOrCreate(['name' => 'walikelas']);
+        $roleWali = Role::firstOrCreate(['name' => 'walimurid']);
 
-        // Create Admin User
-        $admin = \App\Models\User::firstOrCreate(
+        // 1. Akun Asli (Password: qwertyu123)
+        $admin = User::updateOrCreate(
             ['email' => 'admin@sekolah.com'],
-            ['name' => 'Super Admin', 'password' => bcrypt('admin123')]
+            ['name' => 'Super Admin', 'password' => Hash::make('qwertyu123')]
         );
-        $admin->assignRole($roleAdmin);
+        $admin->syncRoles([$roleAdmin]);
 
-        // Create TU User
-        $tu = \App\Models\User::firstOrCreate(
+        $tu = User::updateOrCreate(
             ['email' => 'tu@sekolah.com'],
-            ['name' => 'Staf Tata Usaha', 'password' => bcrypt('tu123')]
+            ['name' => 'Staf Tata Usaha', 'password' => Hash::make('qwertyu123')]
         );
-        $tu->assignRole($roleTU);
+        $tu->syncRoles([$roleTU]);
 
-        // Create Guru User
         $guruName = 'Bpk. Budi (Wali Kelas)';
-        $guru = \App\Models\User::firstOrCreate(
+        $guru = User::updateOrCreate(
             ['email' => 'guru@sekolah.com'],
-            ['name' => $guruName, 'password' => bcrypt('guru123')]
+            ['name' => $guruName, 'password' => Hash::make('qwertyu123')]
         );
-        $guru->assignRole($roleGuru);
+        $guru->syncRoles([$roleGuru]);
 
-        // Ensure this Guru exists in teachers table
-        \App\Models\Teacher::firstOrCreate(
+        Teacher::firstOrCreate(
             ['name' => $guruName],
             ['position' => 'Wali Kelas', 'subject' => 'Umum']
         );
 
-        // Create Wali Murid User
-        $walimurid = \App\Models\User::firstOrCreate(
+        $walimurid = User::updateOrCreate(
             ['email' => 'wali@sekolah.com'],
-            ['name' => 'Bpk. Ahmad (Ortu)', 'password' => bcrypt('wali123')]
+            ['name' => 'Bpk. Ahmad (Ortu)', 'password' => Hash::make('qwertyu123')]
         );
-        $walimurid->assignRole($roleWali);
+        $walimurid->syncRoles([$roleWali]);
+
+        // Link student to original wali if available
+        Student::whereNull('parent_id')->orWhere('parent_id', 0)->take(2)->update(['parent_id' => $walimurid->id]);
+
+        // 2. Akun Demo Tiap Role (Password: password)
+        $demoAdmin = User::updateOrCreate(
+            ['email' => 'demo_admin@sekolah.com'],
+            ['name' => 'Demo Super Admin', 'password' => Hash::make('password')]
+        );
+        $demoAdmin->syncRoles([$roleAdmin]);
+
+        $demoTu = User::updateOrCreate(
+            ['email' => 'demo_tu@sekolah.com'],
+            ['name' => 'Demo Tata Usaha', 'password' => Hash::make('password')]
+        );
+        $demoTu->syncRoles([$roleTU]);
+
+        $demoGuruName = 'Demo Guru (Wali Kelas)';
+        $demoGuru = User::updateOrCreate(
+            ['email' => 'demo_guru@sekolah.com'],
+            ['name' => $demoGuruName, 'password' => Hash::make('password')]
+        );
+        $demoGuru->syncRoles([$roleGuru]);
+
+        Teacher::firstOrCreate(
+            ['name' => $demoGuruName],
+            ['position' => 'Wali Kelas Demo', 'subject' => 'Teknologi Informasi']
+        );
+
+        $demoWali = User::updateOrCreate(
+            ['email' => 'demo_wali@sekolah.com'],
+            ['name' => 'Demo Wali Murid', 'password' => Hash::make('password')]
+        );
+        $demoWali->syncRoles([$roleWali]);
+
+        // Link student to demo wali
+        Student::take(2)->update(['parent_id' => $demoWali->id]);
     }
 }

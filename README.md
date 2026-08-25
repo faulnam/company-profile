@@ -1,59 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Manajemen Sekolah dan Portal Profil Terpadu
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Informasi Manajemen Sekolah dan Portal Profil Terpadu adalah aplikasi berbasis web yang menggabungkan portal informasi profil sekolah modern dan sistem tata kelola akademik institusi pendidikan multi peran. Aplikasi ini dirancang untuk memudahkan manajemen konten sekolah, pendaftaran siswa baru (PPDB) online beserta ujian masuk daring, pengelolaan kurikulum, pencatatan presensi, rekapitulasi nilai, cetak e-rapor, serta pemantauan tagihan SPP bagi orang tua siswa.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Akun Role Asli (Production / Default)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Berikut adalah daftar akun pengguna asli untuk setiap peran sistem:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Peran | Email | Password |
+|---|---|---|
+| Super Admin | `admin@sekolah.com` | `qwertyu123` |
+| Staf Tata Usaha | `tu@sekolah.com` | `qwertyu123` |
+| Wali Kelas / Guru | `guru@sekolah.com` | `qwertyu123` |
+| Wali Murid / Orang Tua | `wali@sekolah.com` | `qwertyu123` |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Akun Role Demo (Fitur Auto Delete 3 Menit)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Aplikasi ini dilengkapi dengan akun demo untuk pengujian interaktif setiap peran. Setiap data atau konten baru yang dibuat oleh akun demo akan secara otomatis terhapus dari sistem dalam waktu 3 menit setelah pembuatan.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+| Peran Demo | Email Demo | Password Demo | Masa Berlaku Konten |
+|---|---|---|---|
+| Demo Super Admin | `demo_admin@sekolah.com` | `password` | 3 Menit Otomatis Terhapus |
+| Demo Tata Usaha | `demo_tu@sekolah.com` | `password` | 3 Menit Otomatis Terhapus |
+| Demo Wali Kelas | `demo_guru@sekolah.com` | `password` | 3 Menit Otomatis Terhapus |
+| Demo Wali Murid | `demo_wali@sekolah.com` | `password` | 3 Menit Otomatis Terhapus |
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Fitur Utama
 
-```bash
-composer require laravel/boost --dev
+- **Portal Profil Publik**: Menampilkan profil sekolah, berita, kategori, halaman statis kustom, informasi jurusan, dan profil GTK (Guru dan Tenaga Kependidikan).
+- **PPDB Online Terpadu**: Formulir pendaftaran calon siswa, upload berkas persyaratan, pembayaran formulir pendaftaran, dan modul ujian seleksi tes masuk online.
+- **Manajemen Akademik (Tata Usaha)**: Pengelolaan data siswa, data wali murid, rombongan belajar / kelas, mata pelajaran, penjadwalan pelajaran, verifikasi kelulusan PPDB, dan ekspor data ke CSV/PDF.
+- **Manajemen Keuangan & SPP**: Penerbitan tagihan biaya pendidikan / SPP, konfirmasi status pembayaran, dan riwayat transaksi keuangan.
+- **Portal Guru & Wali Kelas**: Pencatatan jadwal mengajar, penginputan presensi kehadiran siswa, pengisian nilai tugas dan ujian, serta pencetakan lembar e-rapor siswa.
+- **Portal Wali Murid**: Akses monitoring jadwal pelajaran anak, rekap kehadiran siswa, riwayat pembayaran tagihan, serta unduh dan cetak e-rapor anak.
+- **Sistem Role & Keamanan**: Menggunakan autentikasi Laravel Breeze dan otorisasi berbasis Spatie Laravel Permission.
+- **Pembersihan Otomatis Data Demo**: Mekanisme otomatis berbasis event listener dan cron schedule untuk menghapus konten uji coba demo setelah 3 menit.
 
-php artisan boost:install
-```
+---
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Teknologi yang Digunakan (Tech Stack)
 
-## Contributing
+- **Backend**: PHP 8.3 & Laravel 13
+- **Database**: MySQL
+- **Autentikasi & Otorisasi**: Laravel Breeze & Spatie Laravel Permission
+- **Frontend**: Blade Templating, Tailwind CSS, Alpine.js
+- **Build Tool**: Vite
+- **Automation**: Laravel Scheduler & Eloquent Event Listeners
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## Panduan Instalasi & Menjalankan Proyek
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **Clone repository dan masuk ke direktori proyek**:
+   ```bash
+   git clone <repository-url>
+   cd rekomendasi
+   ```
 
-## Security Vulnerabilities
+2. **Install dependensi PHP & Node.js**:
+   ```bash
+   composer install
+   npm install
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. **Konfigurasi Environment**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   Sesuaikan konfigurasi database (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`) pada file `.env`.
 
-## License
+4. **Jalankan Migrasi dan Seeder**:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-"# company-profile" 
+5. **Build Asset Frontend & Jalankan Server**:
+   ```bash
+   npm run build
+   php artisan serve
+   ```
+   Aplikasi siap diakses melalui peramban web di `http://localhost:8000`.
